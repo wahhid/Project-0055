@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="product_transaction_per_gondola_external_layout">
+            <!-- Multicompany -->
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <t t-call="ranch_dc_project.product_transaction_per_gondola_external_layout_header"/>
+            <t t-raw="0" />
+            <t t-call="ranch_dc_project.product_transaction_per_gondola_external_layout_footer"/>
+        </template>
+
+        <template id="product_transaction_per_gondola_external_layout_header">
+            <div class="header">
+                <div class="col-xs-3">
+                    <div class="row">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
+                    </div>
+                </div>
+                <div class="col-xs-9">
+                    <div class="row">
+                        <h2>Product Transaction by Bin</h2>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="product_transaction_per_gondola_external_layout_footer">
+            <div class="footer">
+            </div>
+        </template>
+
+        <template id="report_producttransactionpergondola">
+            <t t-call="report.html_container">
+                <t t-if="data['form']['report_gondola_filter']== '01'">
+                    <t t-set="gondolas" t-value="get_gondolas(data['form']['stock_inventory_periode_id'][0])"/>
+                </t>
+                <t t-if="data['form']['report_gondola_filter']== '02'">
+                    <t t-set="gondolas" t-value="get_gondola_range(data['form']['gondola_start_code'],data['form']['gondola_end_code'])"/>
+                </t>
+                <t t-if="data['form']['report_gondola_filter']== '03'">
+                    <t t-set="gondolas" t-value="get_gondola_selection(data['form']['gondola_ids'])"/>
+                </t>
+                <t t-foreach="gondolas" t-as="gondola_id">
+                    <t t-set="gondola" t-value="get_gondola(gondola_id['id'])[0]"/>
+                    <t t-call="ranch_dc_project.product_transaction_per_gondola_external_layout">
+                        <div class="page">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Seq</th>
+                                        <th>Diff</th>
+                                        <th>Bin</th>
+                                        <th>EAN</th>
+                                        <th>Article</th>
+                                        <th>Product Name</th>
+                                        <th>Batch No</th>
+                                        <th>Quantity</th>
+                                        <th>Exist</th>
+                                        <th>Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="invoice_tbody">
+
+                                    <tr>
+                                        <td colspan="9"><strong>Bin : (<t t-esc="gondola['code']"/>) <t t-esc="gondola['name']"/></strong></td>
+                                    </tr>
+                                    <t t-set="no" t-value="0"/>
+                                    <t t-if="data['form']['report_product_filter'] == '01'">
+                                        <t t-set="lines" t-value="get_stock_inventory_trans_line(data['form']['stock_inventory_periode_id'][0], gondola['id'], data['form']['report_category'])"/>
+                                    </t>
+                                    <t t-if="data['form']['report_product_filter'] == '03'">
+                                        <t t-set="lines" t-value="get_stock_inventory_trans_line(data['form']['stock_inventory_periode_id'][0], gondola['id'], data['form']['report_category'], data['form']['product_ids'])"/>
+                                    </t>
+                                    <t t-foreach="lines" t-as="line">
+                                        <t t-set="no" t-value="no + 1"/>
+                                        <tr>
+                                            <td><t t-esc="no"/></td>
+                                            <td>
+                                                <t t-if="get_article_diff(data['form']['stock_inventory_periode_id'][0],line['article_id'])">
+                                                    <span>*</span>
+                                                </t>
+                                            </td>
+                                            <td><span t-esc="gondola['code']"/></td>
+                                            <td><span t-esc="line['ean']"/></td>
+                                            <td><span t-esc="line['article_id']"/></td>
+                                            <td><span t-esc="line['product_name']"/></td>
+                                            <td><span t-esc="line['batchno']"/></td>
+
+                                            <t t-if="line['step'] == '1'">
+                                                <td><span t-esc="line['qty1']"/></td>
+                                            </t>
+                                            <t t-if="line['step'] == '2'">
+                                                <td><span t-esc="line['qty2']"/></td>
+                                            </t>
+                                            <t t-if="line['step'] == '3'">
+                                                <td><span t-esc="line['qty3']"/></td>
+                                            </t>
+                                            <td>
+                                                <t t-if="not line['stock_inventory_trans_source_id']">
+                                                    <span>*</span>
+                                                </t>
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <template id="gondola_transaction_per_product_external_layout">
+            <!-- Multicompany -->
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <t t-call="ranch_dc_project.gondola_transaction_per_product_external_layout_header"/>
+            <t t-raw="0" />
+            <t t-call="ranch_dc_project.gondola_transaction_per_product_external_layout_footer"/>
+        </template>
+
+        <template id="gondola_transaction_per_product_external_layout_header">
+            <div class="header">
+                <div class="col-xs-3">
+                    <div class="row">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
+                    </div>
+                </div>
+                <div class="col-xs-9">
+                    <div class="row">
+                        <h2>Bin Transaction by Product</h2>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="gondola_transaction_per_product_external_layout_footer">
+            <div class="footer">
+            </div>
+        </template>
+
+        <template id="report_gondolatransactionperproduct">
+            <t t-call="report.html_container">
+                <t t-call="ranch_dc_project.gondola_transaction_per_product_external_layout">
+                    <div class="page">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Seq</th>
+                                    <th>Bin Code</th>
+                                    <th>Bin Name</th>
+                                    <th>Batch No</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody class="invoice_tbody">
+                                <t t-if="data['form']['report_product_filter']== '01'">
+                                    <t t-set="products" t-value="get_products(data['form']['stock_inventory_periode_id'][0])"/>
+                                </t>
+                                <t t-if="data['form']['report_product_filter']== '03'">
+                                    <t t-set="products" t-value="get_product_selection(data['form']['product_ids'])"/>
+                                </t>
+                                <t t-foreach="products" t-as="product_id">
+                                    <t t-foreach="get_product(product_id['id'])" t-as="product">
+                                        <tr>
+                                            <td colspan="8"><strong>Product : (<t t-esc="product['ean']"/>) <t t-esc="product['name']"/></strong></td>
+                                        </tr>
+                                        <t t-set="no" t-value="0"/>
+                                        <t t-if="data['form']['report_gondola_filter'] == '01'">
+                                            <t t-set="gondolas" t-value="get_gondolas()"/>
+                                        </t>
+                                        <t t-if="data['form']['report_gondola_filter'] == '02'">
+                                            <t t-set="gondolas" t-value="get_gondola_range(data['form']['gondola_start_code'],data['form']['gondola_end_code'])"/>
+                                        </t>
+                                        <t t-if="data['form']['report_gondola_filter'] == '03'">
+                                            <t t-set="gondolas" t-value="data['form']['gondola_ids']"/>
+                                        </t>
+                                        <t t-set="lines" t-value="get_stock_inventory_trans_line(data['form']['stock_inventory_periode_id'][0], product['id'], data['form']['report_category'], gondolas)"/>
+                                        <t t-foreach="lines" t-as="line">
+                                            <t t-set="no" t-value="no + 1"/>
+                                            <tr>
+                                                <td><t t-esc="no"/></td>
+                                                <td><span t-esc="line['gondola_code']"/></td>
+                                                <td><span t-esc="line['gondola_name']"/></td>
+                                                <td><span t-esc="line['batchno']"/></td>
+                                                <td><span t-esc="line['qty1']"/></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

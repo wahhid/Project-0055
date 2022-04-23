@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--  Article Per Gondola -->
+        <record id="wizard_report_product_transaction_per_gondola" model="ir.ui.view">
+            <field name="name">Product By Bin</field>
+            <field name="model">wizard.report.product.transaction.per.gondola</field>
+            <field name="arch" type="xml">
+                <form string="Article By Bin">
+                    <group>
+                        <field name="stock_inventory_periode_id"/>
+                        <field name="iface_all_gondola"/>
+                        <field name="gondola_ids" widget="many2many_tags" attrs="{'invisible':[('iface_all_gondola','=', True)]}" options="{'create': false, 'create_edit': false}"/>
+                        <field name="iface_all_product"/>
+                        <field name="product_ids" widget="many2many_tags" attrs="{'invisible':[('iface_all_product','=', True)]}" />
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" name="print_report" type="object" string="Print Report"/>
+                        <button class="oe_link" string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="act_wizard_report_product_per_gondola" model="ir.actions.act_window">
+            <field name="name">Product By Bin</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.report.product.transaction.per.gondola</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+        <menuitem  id="menu_product_transaction_per_gondola"
+                   name="Product By Bin"
+                   action="act_wizard_report_product_per_gondola"
+                   groups="stock.group_stock_manager,group_stock_supervisor"
+                   parent="menu_stock_opname_report"/>
+
+    </data>
+</openerp>

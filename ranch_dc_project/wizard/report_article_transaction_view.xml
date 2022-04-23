@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--  Article Per Gondola -->
+        <record id="wizard_report_article_transaction" model="ir.ui.view">
+            <field name="name">Article Transaction</field>
+            <field name="model">wizard.report.article.transaction</field>
+            <field name="arch" type="xml">
+                <form string="Article By Gondola">
+                    <field name="report_printed" invisible="1"/>
+                    <group attrs="{'invisible':[('report_printed','=',True)]}">
+                        <field name="stock_inventory_periode_id"/>
+                        <field name="report_type"/>
+                    </group>
+                    <group attrs="{'invisible':[('report_printed','=',False)]}">
+                        <field name="report_filename"/>
+                        <field name="report_file" readonly="1" filename="report_filename"/>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" name="action_print_report" type="object" string="Print Report" attrs="{'invisible':[('report_printed','=',True)]}"/>
+                        <button class="oe_link" string="Cancel" special="cancel" attrs="{'invisible':[('report_printed','=',True)]}"/>
+                        <button string="Close" class="btn-warning" special="cancel" attrs="{'invisible':[('report_printed','=',False)]}"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="act_wizard_report_article_transaction" model="ir.actions.act_window">
+            <field name="name">Article Transaction</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.report.article.transaction</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem  id="menu_article_transaction" name="Article Transaction" action="act_wizard_report_article_transaction" groups="stock.group_stock_manager,group_stock_supervisor" parent="menu_stock_opname_report"/>
+
+    </data>
+</openerp>

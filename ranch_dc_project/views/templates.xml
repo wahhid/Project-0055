@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<openerp>
+    <data>
+        
+        <template id="warehouse_opname_index">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                    <script type="text/javascript">
+                        document.forms['form'].elements['username'].focus();
+                    </script>
+                </head>
+                <body>
+                    <form id="form" action="checklogin" method="POST">
+                        <table border="0">
+                            <tr>
+                                <td>NIK</td>
+                                <td>:</td>
+                                <td><input type="text" name="username" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td>Password</td>
+                                <td>:</td>
+                                <td><input type="password" name="password" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td>Site</td>
+                                <td>:</td>
+                                <td>
+                                    <select name="siteid">
+                                         <t t-foreach="warehouses" t-as="warehouse">
+                                            <option t-att-value="warehouse.id"><t t-esc="warehouse.name"/></option>
+                                         </t>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Login" />
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </body>
+            </html>
+        </template>
+
+        <template id="warehouse_opname_periode_list">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                </head>
+                <body>
+                    <form action="/warehouse/opname/gondola/find" method="POST">
+                        Username : <t t-esc="request.session.username"/>
+                        <table>
+                            <tr>
+                                <td>Periode</td>
+                                <td>:</td>
+                                <td>
+                                    <select name="periodeid">
+                                         <t t-foreach="periodes" t-as="periode">
+                                            <option t-att-value="periode.id"><t t-esc="periode.name"/></option>
+                                         </t>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <input type="submit" name="submit" value="Next" />
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </body>
+            </html>
+        </template>
+
+        <template id="warehouse_opname_gondola_find">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                </head>
+                <body>
+                    <form method="POST" action="/warehouse/opname/gondola/result" >
+                        <table border="1" width="25%">
+                            <tr>
+                                <td>Site</td>
+                                <td>:</td>
+                                <td>
+                                    <t t-esc="request.session.warehousename"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Periode</td>
+                                <td>:</td>
+                                <td>
+                                    <t t-esc="request.session.periodename"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Bin</td>
+                                <td>:</td>
+                                <td>
+                                    <input type="text" name="gondolacode"/>
+                                </td>
+                            </tr>
+                            <tr t-if="msg">
+                                <td></td>
+                                <td></td>
+                                <td><font color="red"><t t-esc="msg"/></font></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td><input type="submit" value="Find"/></td>
+                            </tr>
+                        </table>
+                        <a href="/warehouse/opname/logout">Logout</a>
+                   </form>
+                </body>
+            </html>
+        </template>
+
+        <template id="warehouse_opname_gondola_result">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                </head>
+                <body>
+                    <table border="1">
+                        <tr>
+                            <td>Site</td>
+                            <td>:</td>
+                            <td>
+                                <t t-esc="request.session.warehousename"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Periode</td>
+                            <td>:</td>
+                            <td>
+                                <t t-esc="request.session.periodename"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bin Name</td>
+                            <td>:</td>
+                            <td>
+                                <t t-esc="request.session.gondolacode"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Progress</td>
+                            <td>:</td>
+                            <td>
+                                <font color="red">
+                                    <t t-if="request.session.step == '1'">
+                                        <span>First Collection</span>
+                                    </t>
+                                    <t t-if="request.session.step == '2'">
+                                        <span>Second Collection</span>
+                                    </t>
+                                    <t t-if="request.session.step == '3'">
+                                        <span>Third Collection</span>
+                                    </t>
+                                </font>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>User</td>
+                            <td>:</td>
+                            <td>
+                                <t t-esc="request.session.username"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <a href="/warehouse/opname/trans/product">Start</a>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>
+        </template>
+
+        <template id="warehouse_opname_trans_find">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                </head>
+                <body>
+
+                </body>
+            </html>
+        </template>
+
+        <template id="warehouse_opname_trans_product">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                </head>
+                <body>
+                    <form method="POST" action="/warehouse/opname/trans/batch">
+                        <table border="1">
+                            <tr>
+                                <td>Site</td>
+                                <td>
+                                    <t t-esc="request.session.warehousename"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Periode</td>
+                                <td>
+                                    <t t-esc="request.session.periodename"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bin</td>
+                                <td>
+                                    <t t-esc="request.session.gondolaname"/>
+                                </td>
+                            </tr>
+                            <tr>
+                            <td>Progress</td>
+                                <td>
+                                    <font color="red">
+                                        <t t-if="request.session.step == '1'">
+                                            <span>First Collection</span>
+                                        </t>
+                                        <t t-if="request.session.step == '2'">
+                                            <span>Second Collection</span>
+                                        </t>
+                                        <t t-if="request.session.step == '3'">
+                                            <span>Third Collection</span>
+                                        </t>
+                                    </font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Last</td>
+                                <td><t t-esc="request.session.lastproduct"/></td>
+                            </tr>
+                            <tr>
+                                <td>Ean</td>
+                                <td><input type="text" name="ean" value=""/></td>
+                            </tr>
+                            <tr t-if="msg">
+                                <td></td>
+                                <td><font color="red"><t t-esc="msg"/></font></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><input type="submit" value="Submit"/></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><a href="/warehouse/opname/trans/close">Close Transaction</a></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </form>
+                </body>
+            </html>
+        </template>
+
+        <template id="warehouse_opname_trans_batch">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                </head>
+                <body>
+                    <form method="POST" action="/warehouse/opname/trans/qty">
+                        <table border="1">
+                            <tr>
+                                <td>Site</td>
+                                <td>
+                                    <t t-esc="request.session.warehousename"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Periode</td>
+                                <td>
+                                    <t t-esc="request.session.periodename"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bin</td>
+                                <td>
+                                    <t t-esc="request.session.gondolaname"/>
+                                </td>
+                            </tr>
+                            <tr>
+                            <td>Progress</td>
+                                <td>
+                                    <font color="red">
+                                        <t t-if="request.session.step == '1'">
+                                            <span>First Collection</span>
+                                        </t>
+                                        <t t-if="request.session.step == '2'">
+                                            <span>Second Collection</span>
+                                        </t>
+                                        <t t-if="request.session.step == '3'">
+                                            <span>Third Collection</span>
+                                        </t>
+                                    </font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Last</td>
+                                <td><t t-esc="request.session.lastproduct"/></td>
+                            </tr>
+                            <tr>
+                                <td>Ean</td>
+                                <td><t t-esc="request.session.ean"/></td>
+                            </tr>
+                            <tr>
+                                <td>Article</td>
+                                <td><t t-esc="request.session.articleid"/></td>
+                            </tr>
+                             <tr>
+                                <td>Product</td>
+                                <td><t t-esc="request.session.productname"/></td>
+                            </tr>
+                            <tr>
+                                <td>Batch</td>
+                                <td>
+                                    <t t-if="request.session.is_batchnos">
+                                        <select name="batchno">
+                                            <t t-foreach="request.session.batchnos" t-as="batchno">
+                                                <option t-att-value="batchno['batchno']"><t t-esc="batchno['batchno']"/></option>
+                                            </t>
+                                        </select>
+                                    </t>
+                                    <t t-if="request.session.is_batchnos">
+                                        <span>No Batch</span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr t-if="msg">
+                                <td></td>
+                                <td><font color="red"><t t-esc="msg"/></font></td>
+                            </tr>
+                            <t t-if="request.session.is_batchnos">
+                                <tr>
+                                    <td></td>
+                                    <td><input type="submit" value="Submit"/></td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td></td>
+                                <td><a href="/warehouse/opname/trans/batchother">Other Batch</a></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><a href="/warehouse/opname/trans/close">Close Transaction</a></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </form>
+                </body>
+            </html>
+        </template>
+
+         <template id="warehouse_opname_trans_batch_other">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                </head>
+                <body>
+                    <form method="POST" action="/warehouse/opname/trans/qty">
+                        <table border="1">
+                            <tr>
+                                <td>Site</td>
+                                <td>
+                                    <t t-esc="request.session.warehousename"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Periode</td>
+                                <td>
+                                    <t t-esc="request.session.periodename"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bin</td>
+                                <td>
+                                    <t t-esc="request.session.gondolaname"/>
+                                </td>
+                            </tr>
+                            <tr>
+                            <td>Progress</td>
+                                <td>
+                                    <font color="red">
+                                        <t t-if="request.session.step == '1'">
+                                            <span>First Collection</span>
+                                        </t>
+                                        <t t-if="request.session.step == '2'">
+                                            <span>Second Collection</span>
+                                        </t>
+                                        <t t-if="request.session.step == '3'">
+                                            <span>Third Collection</span>
+                                        </t>
+                                    </font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Last</td>
+                                <td><t t-esc="request.session.lastproduct"/></td>
+                            </tr>
+                            <tr>
+                                <td>Ean</td>
+                                <td><t t-esc="request.session.ean"/></td>
+                            </tr>
+                            <tr>
+                                <td>Article</td>
+                                <td><t t-esc="request.session.articleid"/></td>
+                            </tr>
+                             <tr>
+                                <td>Product</td>
+                                <td><t t-esc="request.session.productname"/></td>
+                            </tr>
+                            <tr>
+                                <td>Batch</td>
+                                <td>
+                                    <input name="batchno"/>
+                                </td>
+                            </tr>
+                            <tr t-if="msg">
+                                <td></td>
+                                <td><font color="red"><t t-esc="msg"/></font></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><input type="submit" value="Submit"/></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><a href="/warehouse/opname/trans/close">Close Transaction</a></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </form>
+                </body>
+            </html>
+        </template>
+
+        <template id="warehouse_opname_trans_qty">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                    <title>Stock System - Ranch Market</title>
+                </head>
+                <body>
+                    <form method="POST" action="/warehouse/opname/trans/save">
+                        <table border="1">
+                            <tr>
+                                <td>Site</td>
+                                <td><t t-esc="request.session.warehousename"/></td>
+                            </tr>
+                            <tr>
+                                <td>Periode</td>
+                                <td><t t-esc="request.session.periodename"/></td>
+                            </tr>
+                            <tr>
+                                <td>Ean</td>
+                                <td><t t-esc="request.session.ean"/></td>
+                            </tr>
+                            <tr>
+                                <td>Article</td>
+                                <td><t t-esc="request.session.articleid"/></td>
+                            </tr>
+                             <tr>
+                                <td>Product</td>
+                                <td><t t-esc="request.session.productname"/></td>
+                            </tr>
+                            <tr>
+                                <td>Batch No</td>
+                                <td><t t-esc="request.session.batchno"/></td>
+                            </tr>
+                            
+                             <t t-if="request.session.step == '1'">
+                                <tr>
+                                    <td>Quantity</td>
+                                    <td>
+                                        <input type="text" name="qty" value=""/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr t-if="msg">
+                                <td></td>
+                                <td><font color="red"><t t-esc="msg"/></font></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><input type="submit" value="Submit" /></td>
+                            </tr>
+                        </table>
+                        <a href="/warehouse/opname/trans/back">Back</a>
+                    </form>
+                </body>
+            </html>
+        </template>
+    </data>
+</openerp>

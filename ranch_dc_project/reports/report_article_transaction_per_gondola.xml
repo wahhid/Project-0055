@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="article_transaction_per_gondola_external_layout">
+            <!-- Multicompany -->
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <t t-call="ranch_dc_project.article_transaction_per_gondola_external_layout_header"/>
+            <t t-raw="0" />
+            <t t-call="ranch_dc_project.article_transaction_per_gondola_external_layout_footer"/>
+        </template>
+
+        <template id="article_transaction_per_gondola_external_layout_header">
+            <div class="header">
+                <div class="row">
+                    <center>
+                        <h2>Article Transaction by Bin</h2>
+                    </center>
+                </div>
+                <div class="row">
+                    <center><span t-esc="formatLang(data['form']['date_start'],date=True)"/> - <span t-esc="formatLang(data['form']['date_end'],date=True)"/></center>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <span>NRK</span>
+                            </div>
+                            <div class="col-xs-8">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <span>NIP</span>
+                            </div>
+                            <div class="col-xs-8">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <span>Nama</span>
+                            </div>
+                            <div class="col-xs-8">
+                                <span t-esc="get_employee_name(employee_id)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <span>Jabatan</span>
+                            </div>
+                            <div class="col-xs-8">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <span>Tanggal Masuk</span>
+                            </div>
+                            <div class="col-xs-8">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <span>Organisasi</span>
+                            </div>
+                            <div class="col-xs-8">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="article_transaction_per_gondola_external_layout_footer">
+            <div class="footer">
+            </div>
+        </template>
+
+        <menuitem name="Report" id="menu_hr_root_report" parent="jakc_hr_schedule.menu_time_attendance" groups="base.group_hr_user" sequence="20"/>
+        <menuitem action="action_report_absence_details" name="Employee Absence" id="menu_hr_absence_report" parent="menu_hr_root_report" groups="base.group_hr_user" sequence="1"/>
+
+
+    </data>
+</openerp>

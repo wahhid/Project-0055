@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--  Article Per Gondola -->
+        <record id="wizard_report_product_transaction_per_gondola" model="ir.ui.view">
+            <field name="name">Product or Gondola</field>
+            <field name="model">wizard.report.product.transaction.per.gondola</field>
+            <field name="arch" type="xml">
+                <form string="Article By Gondola">
+                    <field name="report_printed" invisible="1"/>
+                    <group attrs="{'invisible':[('report_printed','=',True)]}">
+                        <field name="report_output"/>
+                        <field name="stock_inventory_periode_id" domain="[('state','=', 'open')]" options="{'create': false, 'create_edit': false}"/>
+                        <field name="report_type"/>
+                        <field name="report_category"/>
+                        <field name="report_gondola_filter"/>
+                        <field name="gondola_start_code" attrs="{'invisible':[('report_gondola_filter','in',('01','03'))]}"/>
+                        <field name="gondola_end_code" attrs="{'invisible':[('report_gondola_filter','in',('01','03'))]}"/>
+                        <field name="gondola_ids" widget="many2many_tags" attrs="{'invisible':[('report_gondola_filter','in',('01','02'))]}" options="{'create': false, 'create_edit': false}"/>
+                        <field name="report_product_filter"/>
+                        <field name="product_ids" widget="many2many_tags" attrs="{'invisible':[('report_product_filter','in', ('01'))]}"/>
+                        <field invisible="1" name="state"/>
+                    </group>
+                    <group attrs="{'invisible':[('report_printed','=',False)]}">
+                        <separator string="Export done" colspan="4"/>
+                        <group>
+                            <field name="report_filename"/>
+                            <field name="report_file" readonly="1" filename="report_filename"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="print_report" type="object" string="Print Report" class="btn-primary" attrs="{'invisible':[('report_printed','=',True)]}"/>
+                        <button string="Cancel" class="btn-default" special="cancel" attrs="{'invisible':[('report_printed','=',True)]}"/>
+                        <button string="Close" class="btn-primary" special="cancel" attrs="{'invisible':[('report_printed','=',False)]}"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="act_wizard_report_product_per_gondola" model="ir.actions.act_window">
+            <field name="name">Product or Bin</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.report.product.transaction.per.gondola</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem  id="menu_product_transaction_per_gondola"
+                   name="Product or Bin"
+                   action="act_wizard_report_product_per_gondola"
+                   groups="stock.group_stock_manager,group_stock_supervisor"
+                   parent="menu_stock_opname_report"/>
+
+    </data>
+</openerp>
